@@ -5,6 +5,8 @@ import Events from "./page/Events";
 import Login from "./page/Login";
 import SignUp from "./page/SignUp";
 import UploadImage from "./page/UploadImage";
+import AddEventPage from "./page/AddEvent";
+import EventPictures from "./page/EventPictures";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/upload-image" element={<UploadImage />} />
+        <Route path="/add-event" element={<AddEventPage />} />
+        <Route path="/events/:eventId" element={<EventPictures />} />
       </Routes>
     </Router>
   );

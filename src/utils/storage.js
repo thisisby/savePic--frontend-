@@ -20,6 +20,12 @@ const storage = {
   setUser: (user) => {
     window.localStorage.setItem(`${storagePrefix}user`, user);
   },
+  setRole: (user) => {
+    window.localStorage.setItem(`${storagePrefix}role`, user);
+  },
+  getRole: () => {
+    return window.localStorage.getItem(`${storagePrefix}role`);
+  },
 };
 
 export default storage;

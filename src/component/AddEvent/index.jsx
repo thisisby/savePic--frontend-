@@ -1,73 +1,86 @@
 import { Fragment, useState, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { getEvents } from "../../../api/Events/getEvents";
-import {
-  createPicture,
-  createPost,
-  useCreatePicture,
-} from "../../../api/Pictures/postPicture";
-import storage from "../../../utils/storage";
-
-const UploadImageForm = () => {
-  const [events, setEvents] = useState([]);
+import { createEvent } from "../../api/Events/postEvent";
+import storage from "../../utils/storage";
+import { useNavigate } from "react-router-dom";
+const AddEvent = () => {
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([
+    {
+      id: 1,
+      title: "CHUI",
+    },
+    {
+      id: 2,
+      title: "BATKEN",
+    },
+    {
+      id: 3,
+      title: "JALALABAT",
+    },
+    {
+      id: 4,
+      title: "ISSYKKUL",
+    },
+    {
+      id: 5,
+      title: "NARYN",
+    },
+    {
+      id: 6,
+      title: "OSH",
+    },
+    {
+      id: 7,
+      title: "TALAS",
+    },
+  ]);
   const [selectedEvent, setSelectedEvent] = useState({
-    title: "Choose Event",
+    title: "Choose Location",
   });
-  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
-    label: "",
-    file: null,
+    title: "",
+    creator: "",
+    username: storage.getUser(),
   });
-  useEffect(() => {
-    setLoading(true);
-    getEvents()
-      .then((response) => {
-        setEvents(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
-  const createPictureHandler = async (event) => {
+  const createEventHandler = async (event) => {
     event.preventDefault();
 
-    setLoading(true);
-
-    let form_data = new FormData();
-    for (const key of Object.keys(data.file)) {
-      form_data.append("file", data.file[key]);
+    const newData = {
+      ...data,
+      locationEnum: selectedEvent.title,
+    };
+    console.log(newData);
+    const res = await createEvent(newData);
+    if (res.status === 200) {
+      navigate("/events");
     }
-    // form_data.append("file", data.file);
-    form_data.append("label", data.label);
-    form_data.append("eventId", selectedEvent.id);
-    form_data.append("username", storage.getUser());
-
-    const res = createPicture(form_data);
     console.log(res);
-    setLoading(false);
   };
 
-  if (loading) {
-    return <h2 className="text-xl p-10">Loading</h2>;
-  }
   return (
     <div className="w-full flex justify-center">
-      <form
-        encType="multipart/form-data"
-        onSubmit={createPictureHandler}
-        className="w-full md:w-2/3 lg:w-1/3"
-      >
+      <form onSubmit={createEventHandler} className="w-full md:w-2/3 lg:w-1/3">
         <div className="text-left mb-4">
-          <label htmlFor="username">Label</label>
+          <label htmlFor="title">Title</label>
           <input
             className="w-full border rounded-lg px-2 py-2 mt-2"
             placeholder="Enter label"
             type="text"
-            onChange={(e) => setData({ ...data, label: e.target.value })}
+            onChange={(e) => setData({ ...data, title: e.target.value })}
           />
         </div>
+        <div className="text-left mb-4">
+          <label htmlFor="title">Creator</label>
+          <input
+            className="w-full border rounded-lg px-2 py-2 mt-2"
+            placeholder="Enter label"
+            type="text"
+            onChange={(e) => setData({ ...data, creator: e.target.value })}
+          />
+        </div>
+
         <div className="text-left mb-4 relative">
           <label htmlFor="username">Select Event</label> <br />
           <Listbox value={selectedEvent} onChange={setSelectedEvent}>
@@ -97,18 +110,8 @@ const UploadImageForm = () => {
             </Transition>
           </Listbox>
         </div>
-        <div className="text-left">
-          <label htmlFor="password">Select Picture</label>
-          <input
-            className="w-full border border-dashed rounded-lg px-2 py-2 mt-2"
-            placeholder="Enter password"
-            type="file"
-            onChange={(e) => setData({ ...data, file: e.target.files })}
-            multiple
-          />
-        </div>
         <button
-          onClick={createPictureHandler}
+          onClick={createEventHandler}
           className="mt-4 bg-green-200 w-full py-2 rounded-lg"
         >
           Upload
@@ -118,4 +121,4 @@ const UploadImageForm = () => {
   );
 };
 
-export default UploadImageForm;
+export default AddEvent;

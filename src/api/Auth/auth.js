@@ -15,6 +15,14 @@ export const isLogged = () => {
   return false;
 };
 
+export const userRole = () => {
+  let role = storage.getRole();
+  if (role) {
+    return role;
+  }
+  return null;
+};
+
 export const logout = () => {
   storage.clearToken();
   window.location.assign("http://localhost:3000/");

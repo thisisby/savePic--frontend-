@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../../api/Auth/auth";
+import { userRole } from "../../../api/Users/authClientUser";
 import storage from "../../../utils/storage";
 
 const LoginForm = () => {
@@ -15,8 +16,12 @@ const LoginForm = () => {
     const res = await login(data);
     console.log(res);
     if (res.status === 200) {
-      navigate("/");
       storage.setUser(data.username);
+      const user = await userRole();
+      if (user.status === 200) {
+        storage.setRole(user.data);
+        navigate("/");
+      }
     }
   };
   return (
